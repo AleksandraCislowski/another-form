@@ -3,6 +3,7 @@ import { useState } from "react";
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
 
@@ -25,12 +26,12 @@ const SimpleInput = (props) => {
     setEnteredName(event.target.value);
   };
 
-  const nameInputBlurHandler = (event) => {
-    setEnteredNameTouched(true);
-  };
-
   const emailInputChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
+  };
+
+  const nameInputBlurHandler = (event) => {
+    setEnteredNameTouched(true);
   };
 
   const emailInputBlurHandler = (event) => {
@@ -48,6 +49,7 @@ const SimpleInput = (props) => {
 
     setEnteredName("");
     setEnteredNameTouched(false);
+
     setEnteredEmail("");
     setEnteredEmailTouched(false);
   };
@@ -76,10 +78,10 @@ const SimpleInput = (props) => {
         )}
       </div>
       <div className={emailInputClasses}>
-        <label htmlFor='name'>Your E-mail</label>
+        <label htmlFor='email'>Your E-mail</label>
         <input
           type='email'
-          id='name'
+          id='email'
           onChange={emailInputChangeHandler}
           onBlur={emailInputBlurHandler}
           value={enteredEmail}
