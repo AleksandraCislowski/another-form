@@ -16,37 +16,74 @@ const BasicForm = (props) => {
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         ) && value.trim() !== ""
   );
+
+  const {
+    value: enteredName,
+    isValid: nameIsValid,
+    hasError: nameError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: nameReset,
+  } = useInput((value) => value.trim() !== "");
+
+  const {
+    value: enteredSurname,
+    isValid: surnameIsValid,
+    hasError: surnameError,
+    valueChangeHandler: surnameChangeHandler,
+    inputBlurHandler: surnameBlurHandler,
+    reset: surnameReset,
+  } = useInput((value) => value.trim() !== "");
+
   let formIsValid = false;
-  if (emailIsValid) {
+  if (emailIsValid && nameIsValid && surnameIsValid) {
     formIsValid = true;
   }
 
   const formSubmissionHandler = (event) => {
     event.preventDefault();
 
-    if (!emailIsValid) {
+    if (!emailIsValid || !nameIsValid || !surnameIsValid) {
       return;
     }
     emailReset();
+    nameReset();
+    surnameReset();
   };
 
-  const emailInputClasses = emailError
-    ? "form-control invalid"
-    : "form-control";
+  const nameClasses = nameError ? "form-control invalid" : "form-control";
+  const surnameClasses = surnameError ? "form-control invalid" : "form-control";
+  const emailClasses = emailError ? "form-control invalid" : "form-control";
 
   return (
     <form onSubmit={formSubmissionHandler}>
       <div className='control-group'>
-        <div className='form-control'>
+        <div className={nameClasses}>
           <label htmlFor='name'>First Name</label>
-          <input type='text' id='name' />
+          <input
+            type='text'
+            id='name'
+            value={enteredName}
+            onChange={nameChangeHandler}
+            onBlur={nameBlurHandler}
+          />
+          {nameError && <p className='error-text'>Name must not be empty.</p>}
         </div>
-        <div className='form-control'>
+        <div className={surnameClasses}>
           <label htmlFor='name'>Last Name</label>
-          <input type='text' id='name' />
+          <input
+            type='text'
+            id='name'
+            value={enteredSurname}
+            onChange={surnameChangeHandler}
+            onBlur={surnameBlurHandler}
+          />
+          {surnameError && (
+            <p className='error-text'>Surname must not be empty.</p>
+          )}
         </div>
       </div>
-      <div className={emailInputClasses}>
+      <div className={emailClasses}>
         <label htmlFor='name'>E-Mail Address</label>
         <input
           type='text'
@@ -60,7 +97,7 @@ const BasicForm = (props) => {
         )}
       </div>
       <div className='form-actions'>
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
