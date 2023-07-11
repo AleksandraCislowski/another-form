@@ -1,21 +1,13 @@
 import useInput from "../hooks/use-input";
 
 const BasicForm = (props) => {
-  const {
-    value: enteredEmail,
-    isValid: emailIsValid,
-    hasError: emailError,
-    valueChangeHandler: emailChangeHandler,
-    inputBlurHandler: emailBlurHandler,
-    reset: emailReset,
-  } = useInput(
-    (value) =>
-      value
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ) && value.trim() !== ""
-  );
+  const isNotEmpty = (value) => value.trim() !== "";
+  const isEmail = (value) =>
+    value
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      ) && value.trim() !== "";
 
   const {
     value: enteredName,
@@ -24,7 +16,7 @@ const BasicForm = (props) => {
     valueChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
     reset: nameReset,
-  } = useInput((value) => value.trim() !== "");
+  } = useInput(isNotEmpty);
 
   const {
     value: enteredSurname,
@@ -33,22 +25,31 @@ const BasicForm = (props) => {
     valueChangeHandler: surnameChangeHandler,
     inputBlurHandler: surnameBlurHandler,
     reset: surnameReset,
-  } = useInput((value) => value.trim() !== "");
+  } = useInput(isNotEmpty);
+
+  const {
+    value: enteredEmail,
+    isValid: emailIsValid,
+    hasError: emailError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: emailReset,
+  } = useInput(isEmail);
 
   let formIsValid = false;
-  if (emailIsValid && nameIsValid && surnameIsValid) {
+  if (nameIsValid && surnameIsValid && emailIsValid) {
     formIsValid = true;
   }
 
   const formSubmissionHandler = (event) => {
     event.preventDefault();
 
-    if (!emailIsValid || !nameIsValid || !surnameIsValid) {
+    if (!nameIsValid || !surnameIsValid || !emailIsValid) {
       return;
     }
-    emailReset();
     nameReset();
     surnameReset();
+    emailReset();
   };
 
   const nameClasses = nameError ? "form-control invalid" : "form-control";
@@ -70,7 +71,7 @@ const BasicForm = (props) => {
           {nameError && <p className='error-text'>Name must not be empty.</p>}
         </div>
         <div className={surnameClasses}>
-          <label htmlFor='name'>Last Name</label>
+          <label htmlFor='name'>Surname</label>
           <input
             type='text'
             id='name'
